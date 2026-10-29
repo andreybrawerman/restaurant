@@ -1,0 +1,16 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    url: jdbc:h2:mem:restaurantdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+springdoc:
+  swagger-ui:
+    use-root-path: true
