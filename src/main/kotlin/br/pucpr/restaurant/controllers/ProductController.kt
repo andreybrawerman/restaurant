@@ -1,7 +1,9 @@
 package br.pucpr.restaurant.controllers
 
-import br.pucpr.restaurant.models.Product
-import br.pucpr.restaurant.repositories.ProductRepository
+import br.pucpr.restaurant.dtos.ProductRequest
+import br.pucpr.restaurant.dtos.ProductResponse
+import br.pucpr.restaurant.services.ProductService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,20 +11,35 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/products")
-class ProductController(val repository: ProductRepository) {
+class ProductController(private val service: ProductService) {
 
     @PostMapping
-    fun create(@Valid @RequestBody product: Product): ResponseEntity<Product> =
-        ResponseEntity.status(HttpStatus.CREATED).body(repository.save(product))
+    fun create(@Valid @RequestBody request: ProductRequest): ResponseEntity<ProductResponse> =
+        ResponseEntity.status(HttpStatus.CREATED).body(service.create(request))
 
     @GetMapping
-    fun listAll(): ResponseEntity<List<Product>> =
-        ResponseEntity.ok(repository.findAll())
+    fun list(
+        @RequestParam(required = false) name: String?,
+        @RequestParam(required = false) categoryId: Long?,
+        @RequestParam(required = false) minPrice: Double?,
+        @RequestParam(required = false) maxPrice: Double?,
+        @RequestParam(defaultValue = "id") sortBy: String,
+        @RequestParam(defaultValue = "asc") direction: String
+    ): ResponseEntity<List<ProductResponse>> =
+        ResponseEntity.ok(service.search(name, categoryId, minPrice, maxPrice, sortBy, direction))
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): ResponseEntity<ProductResponse> =
+        ResponseEntity.ok(service.get(id))
+
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @Valid @RequestBody request: ProductRequest): ResponseEntity<ProductResponse> =
+        ResponseEntity.ok(service.update(id, request))
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "basicAuth")
     fun delete(@PathVariable id: Long): ResponseEntity<Void> {
-        if (!repository.existsById(id)) return ResponseEntity.notFound().build()
-        repository.deleteById(id)
-        return ResponseEntity.ok().build()
+        service.delete(id)
+        return ResponseEntity.noContent().build()
     }
 }

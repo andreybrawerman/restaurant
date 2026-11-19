@@ -2,7 +2,6 @@ package br.pucpr.restaurant.repositories
 
 import br.pucpr.restaurant.models.Product
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 
-@Repository
-interface ProductRepository : JpaRepository<Product, Long>
+interface ProductRepository : JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>

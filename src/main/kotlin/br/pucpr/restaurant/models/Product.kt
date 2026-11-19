@@ -1,6 +1,5 @@
 package br.pucpr.restaurant.models
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
@@ -17,8 +16,7 @@ class Product(
     @field:Positive
     var price: Double = 0.0,
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    @JsonIgnore
-    var order: Order? = null
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    var category: Category? = null
 )
