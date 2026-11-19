@@ -2,7 +2,6 @@ package br.pucpr.restaurant.repositories
 
 import br.pucpr.restaurant.models.Order
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 
-@Repository
-interface OrderRepository : JpaRepository<Order, Long>
+interface OrderRepository : JpaRepository<Order, Long>, JpaSpecificationExecutor<Order>

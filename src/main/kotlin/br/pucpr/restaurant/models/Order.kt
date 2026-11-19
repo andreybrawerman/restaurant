@@ -12,6 +12,10 @@ class Order(
     @field:NotBlank
     var customerName: String = "",
 
-    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
-    var products: MutableList<Product> = mutableListOf()
+    @Enumerated(EnumType.STRING)
+    var status: OrderStatus = OrderStatus.ABERTO,
+
+    // Itens do pedido (tabela do meio). Apagar o pedido apaga só os itens, nunca os produtos.
+    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var items: MutableList<OrderItem> = mutableListOf()
 )
