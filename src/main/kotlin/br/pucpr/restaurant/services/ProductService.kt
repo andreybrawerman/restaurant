@@ -11,6 +11,7 @@ import br.pucpr.restaurant.models.Product
 import br.pucpr.restaurant.repositories.CategoryRepository
 import br.pucpr.restaurant.repositories.OrderItemRepository
 import br.pucpr.restaurant.repositories.ProductRepository
+import br.pucpr.restaurant.security.currentUserName
 import jakarta.persistence.criteria.Predicate
 import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.domain.Specification
@@ -94,7 +95,7 @@ class ProductService(
             throw ConflictException("O produto $id está em um ou mais pedidos e não pode ser removido")
         }
         repository.delete(product)
-        log.info("Produto removido: id={}", id)
+        log.info("Produto removido: id={}, por={}", id, currentUserName())
     }
 
     private fun findEntity(id: Long): Product =

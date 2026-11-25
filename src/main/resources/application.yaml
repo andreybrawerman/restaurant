@@ -2,6 +2,8 @@ server:
   servlet:
     context-path: /api
 spring:
+  config:
+    import: "classpath:security.yaml"
   datasource:
     url: jdbc:h2:mem:restaurantdb
     driverClassName: org.h2.Driver

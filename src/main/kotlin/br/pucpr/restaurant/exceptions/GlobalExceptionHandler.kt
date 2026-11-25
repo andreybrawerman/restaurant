@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.ErrorResponse
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -34,8 +35,20 @@ class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex.message ?: "Requisição inválida")
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ApiError> {
+    @ExceptionHandler(UnauthorizedException::class)
+    fun handleUnauthorized(ex: UnauthorizedException): ResponseEntity<ApiError> {
+        log.warn("Não autenticado: {}", ex.message)
+        return build(HttpStatus.UNAUTHORIZED, ex.message ?: "Não autenticado")
+    }
+
+    // Lançada pelo @PreAuthorize quando o usuário está autenticado, mas não tem o papel exigido
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<ApiError> {
+        log.warn("Acesso negado: {}", ex.message)
+        return build(HttpStatus.FORBIDDEN, "Acesso negado: apenas ADMIN pode executar esta ação")
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)    fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ApiError> {
         val details = ex.bindingResult.fieldErrors.map { "${it.field}: ${it.defaultMessage}" }
         log.warn("Falha de validação: {}", details)
         return build(HttpStatus.BAD_REQUEST, "Dados inválidos", details)

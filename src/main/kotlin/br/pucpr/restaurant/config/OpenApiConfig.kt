@@ -14,8 +14,8 @@ class OpenApiConfig {
         .info(Info().title("Restaurant API").version("1.0").description("API de produtos, categorias e pedidos"))
         .components(
             Components().addSecuritySchemes(
-                "basicAuth",
-                SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")
+                "bearerAuth",
+                SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
             )
         )
 }

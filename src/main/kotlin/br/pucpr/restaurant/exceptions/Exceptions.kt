@@ -8,3 +8,6 @@ class ConflictException(message: String) : RuntimeException(message)
 
 /** 400 - Exception para requisição inválida por regra de negócio */
 class BadRequestException(message: String) : RuntimeException(message)
+
+/** 401 - Exception para credenciais inválidas ou usuário não autenticado */
+class UnauthorizedException(message: String) : RuntimeException(message)

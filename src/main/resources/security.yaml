@@ -1,0 +1,12 @@
+# Configurações de segurança (lidas por SecurityProperties). Importado no application.yaml.
+# Em produção, defina JWT_SECRET e ADMIN_PASSWORD como variáveis de ambiente.
+security:
+  issuer: Restaurant API
+  # Mínimo de 32 caracteres (256 bits) para o HMAC-SHA256
+  secret: ${JWT_SECRET:restaurant-api-segredo-de-desenvolvimento-troque-em-producao-0123456789}
+  expire-hours: 24
+  admin-expire-hours: 1
+  # Administrador criado na inicialização (usado para testar os DELETE)
+  admin-name: Administrador
+  admin-email: admin@restaurant.com
+  admin-password: ${ADMIN_PASSWORD:admin123}

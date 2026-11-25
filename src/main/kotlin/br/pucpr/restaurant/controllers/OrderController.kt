@@ -7,6 +7,7 @@ import br.pucpr.restaurant.models.OrderStatus
 import br.pucpr.restaurant.services.OrderService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -38,7 +39,8 @@ class OrderController(private val service: OrderService) {
         ResponseEntity.ok(service.update(id, request))
 
     @DeleteMapping("/{id}")
-    @SecurityRequirement(name = "basicAuth")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
     fun delete(@PathVariable id: Long): ResponseEntity<Void> {
         service.delete(id)
         return ResponseEntity.noContent().build()
@@ -55,7 +57,8 @@ class OrderController(private val service: OrderService) {
         ResponseEntity.ok(service.addProduct(orderId, productId, quantity))
 
     @DeleteMapping("/{orderId}/products/{productId}")
-    @SecurityRequirement(name = "basicAuth")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
     fun removeProduct(@PathVariable orderId: Long, @PathVariable productId: Long): ResponseEntity<OrderResponse> =
         ResponseEntity.ok(service.removeProduct(orderId, productId))
 }

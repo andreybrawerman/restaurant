@@ -12,6 +12,7 @@ import br.pucpr.restaurant.models.OrderItem
 import br.pucpr.restaurant.models.OrderStatus
 import br.pucpr.restaurant.repositories.OrderRepository
 import br.pucpr.restaurant.repositories.ProductRepository
+import br.pucpr.restaurant.security.currentUserName
 import jakarta.persistence.criteria.Predicate
 import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.domain.Specification
@@ -69,7 +70,7 @@ class OrderService(
     fun delete(id: Long) {
         val order = findEntity(id)
         orderRepository.delete(order)
-        log.info("Pedido removido: id={}", id)
+        log.info("Pedido removido: id={}, por={}", id, currentUserName())
     }
 
     /** Associa um produto ao pedido. Se o produto já estiver no pedido, soma a quantidade. */
@@ -98,7 +99,7 @@ class OrderService(
         ensureEditable(order)
         val removed = order.items.removeIf { it.product?.id == productId }
         if (!removed) throw ResourceNotFoundException("Produto $productId não está no pedido $orderId")
-        log.info("Produto {} removido do pedido {}", productId, orderId)
+        log.info("Produto {} removido do pedido {}, por={}", productId, orderId, currentUserName())
         return orderRepository.save(order).toResponse()
     }
 
